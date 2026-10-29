@@ -1,0 +1,55 @@
+<!doctype html>
+<!-- Table invites from Kitti (Assets/Scripts/Online/Invites.cs). Published next to the privacy policy at
+     https://nishantaneupane.github.io/kittipolicy/join.html?code=ROOMCODE
+     On Android it opens kitti://join/ROOMCODE; without Kitti installed, Chrome falls back to the Play Store, whose
+     link carries the code as an install referrer so the new player still lands at the table. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Join my Kitti table</title>
+<meta property="og:title" content="Join my Kitti table">
+<meta property="og:description" content="Tap to sit at my table in Kitti, the Nepali 9-card game."><style>
+  :root { color-scheme: dark; }
+  body { margin: 0; min-height: 100vh; display: flex; align-items: center; justify-content: center;
+         background: radial-gradient(circle at 50% 30%, #1d5a46, #0b2a21 70%); color: #f3f7f5;
+         font: 17px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  main { width: min(420px, calc(100% - 32px)); text-align: center; }
+  h1 { font-size: 26px; margin: 0 0 6px; }
+  p { margin: 0 0 18px; color: #b9cdc5; }
+  .code { display: inline-block; margin: 6px 0 22px; padding: 8px 18px; border-radius: 999px;
+          background: rgba(246,196,83,.16); color: #f6c453; font-weight: 700; letter-spacing: .12em; font-size: 22px; }
+  a.btn { display: block; padding: 15px; border-radius: 14px; text-decoration: none; font-weight: 700; margin-bottom: 12px; }
+  .primary { background: #f6c453; color: #2a1d05; }
+  .ghost { border: 1px solid rgba(255,255,255,.25); color: #f3f7f5; }
+  small { color: #8fa69d; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Join my Kitti table</h1>
+  <p>Your friend is waiting at a private table.</p>
+  <div class="code" id="code">—</div>
+  <a class="btn primary" id="open" href="#">Open Kitti and sit down</a>
+  <a class="btn ghost" id="store" href="#">Get Kitti on Google Play</a>
+  <small>Already have Kitti? You can also type the code in Private Table.</small>
+</main>
+<script>
+  const pkg = "com.lampsoftnepal.kitti";
+  const code = (new URLSearchParams(location.search).get("code") || "").toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 10);
+  const store = "https://play.google.com/store/apps/details?id=" + pkg + (code ? "&referrer=" + encodeURIComponent("join=" + code) : "");
+  const android = /Android/i.test(navigator.userAgent);
+  const intent = "intent://join/" + code + "#Intent;scheme=kitti;package=" + pkg +
+                 ";S.browser_fallback_url=" + encodeURIComponent(store) + ";end";
+  document.getElementById("code").textContent = code || "—";
+  document.getElementById("store").href = store;
+  const open = document.getElementById("open");
+  if (code && android) {
+    open.href = intent;
+    location.href = intent; // straight into the app (or on to the Play Store)
+  } else {
+    open.style.display = "none";
+  }
+</script>
+</body>
+</html>
